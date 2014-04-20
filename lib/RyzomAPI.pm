@@ -42,7 +42,8 @@ use constant {
 };
 
 
-my $UA = LWP::UserAgent->new(
+# defined with 'our' to swap in testing
+our $UA = LWP::UserAgent->new(
 	timeout   => 10,
 	env_proxy => 1,
 );
