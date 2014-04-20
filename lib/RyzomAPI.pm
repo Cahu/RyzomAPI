@@ -95,6 +95,20 @@ sub guildlist {
 	my ($self) = @_;
 
 	my $base_url = $self->guilds_base_url;
+
+	my $list;
+	my $resp = $UA->get($base_url . "?format=xml");
+
+	if ($resp->is_success) {
+		my $xmlstr = $resp->content;
+
+		my $content = $XS->XMLin($xmlstr);
+		$list = [
+			map { RyzomAPI::Guild->new($_) } @{ $content->{guild} }
+		];
+	}
+
+	return $list;
 }
 
 1;
