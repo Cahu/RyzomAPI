@@ -4,6 +4,10 @@ use 5.014;
 use strict;
 use warnings;
 
+use LWP::UserAgent;
+use XML::Simple qw(:strict);
+
+
 use Exporter qw(import);
 
 our $VERSION = 0.1;
@@ -34,6 +38,17 @@ use constant {
 	GUILDS_BASE_URL    => "http://api.ryzom.com/guilds.php",
 	CHARACTER_BASE_URL => "http://api.ryzom.com/character.php",
 };
+
+
+my $UA = LWP::UserAgent->new(
+	timeout   => 10,
+	env_proxy => 1,
+);
+
+my $XS = XML::Simple->new(
+	KeyAttr    => 1,
+	ForceArray => 0,
+);
 
 
 sub ryzom_app_authenticate {
