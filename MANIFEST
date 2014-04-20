@@ -1,8 +1,10 @@
 lib/RyzomAPI.pm
+lib/RyzomAPI/Item.pm
 lib/RyzomAPI/Time.pm
 Makefile.PL
 MANIFEST
 MANIFEST.SKIP
 README.md
 t/RyzomAPI.t
+t/RyzomAPI/Item.t
 t/RyzomAPI/Time.t
