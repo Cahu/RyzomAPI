@@ -28,19 +28,39 @@ our %EXPORT_TAGS = (
 }
 
 
+use constant {
+	TIME_BASE_URL      => "http://api.ryzom.com/time.php",
+	GUILD_BASE_URL     => "http://api.ryzom.com/guild.php",
+	GUILDS_BASE_URL    => "http://api.ryzom.com/guilds.php",
+	CHARACTER_BASE_URL => "http://api.ryzom.com/character.php",
+};
+
+
 sub ryzom_app_authenticate {
 }
 
 sub ryzom_time_api {
+	my ($base_url) = @_;
+
+	$base_url ||= TIME_BASE_URL;
 }
 
 sub ryzom_character_api {
+	my ($base_url) = @_;
+
+	$base_url ||= CHARACTER_BASE_URL;
 }
 
 sub ryzom_guild_api {
+	my ($base_url) = @_;
+
+	$base_url ||= GUILD_BASE_URL;
 }
 
 sub ryzom_guildlist_api {
+	my ($base_url) = @_;
+
+	$base_url ||= GUILDS_BASE_URL;
 }
 
 1;
