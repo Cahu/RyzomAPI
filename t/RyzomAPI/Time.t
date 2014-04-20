@@ -18,7 +18,9 @@ $RyzomAPI::UA->map_response(
 	HTTP::Response->parse(join("", <DATA>))
 );
 
-my $time = ryzom_time_api();
+my $client = RyzomAPI->new();
+
+my $time = $client->time;
 ok($time->server_tick    == 618734369);
 ok($time->jena_year      == 2577     );
 ok($time->day_of_jy      == 1301     );

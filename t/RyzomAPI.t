@@ -1,13 +1,10 @@
 use strict;
 use warnings;
 
-use Test::More tests => 5;
+use Test::More tests => 2;
 
 BEGIN {
-	use_ok('RyzomAPI', qw(:all));
+	use_ok('RyzomAPI');
 };
 
-ok(defined &ryzom_guild_api);
-ok(defined &ryzom_guildlist_api);
-ok(defined &ryzom_character_api);
-ok(defined &ryzom_app_authenticate);
+can_ok('RyzomAPI', qw(guild guildlist character time));
