@@ -1,3 +1,5 @@
+package RyzomAPI::Time;
+
 use v5.014;
 use strict;
 use warnings;
