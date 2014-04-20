@@ -32,6 +32,10 @@ ok($time->season         == 2        );
 ok($time->day_of_season  == 41       );
 ok($time->time_of_day    == 13       );
 
+ok($time->as_str('day_of_week')    eq 'Holeth');
+ok($time->as_str('season')         eq 'Autumn');
+ok($time->as_str('month_of_cycle') eq 'Frutor');
+
 done_testing();
 
 
