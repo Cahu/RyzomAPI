@@ -1,0 +1,5 @@
+Makefile.PL
+MANIFEST
+README
+t/RyzomAPI.t
+lib/RyzomAPI.pm
