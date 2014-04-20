@@ -1,0 +1,9 @@
+# VIM files
+*.swp
+*.swo
+
+# Perl module files
+blib/
+Makefile
+pm_to_blib
+MYMETA.*
