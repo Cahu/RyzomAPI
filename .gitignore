@@ -2,8 +2,16 @@
 *.swp
 *.swo
 
+# bin files
+*.tgz
+*.tar.gz
+
+# tmp files
+test.pl
+
 # Perl module files
 blib/
 Makefile
 pm_to_blib
 MYMETA.*
+*.bak

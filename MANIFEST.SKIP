@@ -1,0 +1,11 @@
+~$
+.bak$
+.swp$
+.swo$
+.tar.gz$
+^test.pl$
+^Makefile$
+^pm_to_blib$
+^MYMETA
+^blib/
+^.git

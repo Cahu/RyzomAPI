@@ -1,7 +1,8 @@
-MANIFEST
-README.md
-Makefile.PL
-t/RyzomAPI.t
-t/RyzomAPI/Time.t
 lib/RyzomAPI.pm
 lib/RyzomAPI/Time.pm
+Makefile.PL
+MANIFEST
+MANIFEST.SKIP
+README.md
+t/RyzomAPI.t
+t/RyzomAPI/Time.t
