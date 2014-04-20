@@ -8,6 +8,7 @@ use LWP::UserAgent;
 use XML::Simple qw(:strict);
 
 use RyzomAPI::Time;
+use RyzomAPI::Guild;
 
 use Mouse;
 
@@ -76,6 +77,18 @@ sub guild {
 	my ($self, $apikey) = @_;
 
 	my $base_url = $self->guild_base_url;
+
+	my $info;
+	my $resp = $UA->get($base_url . "?apikey=$apikey&format=xml");
+
+	if ($resp->is_success) {
+		my $xmlstr = $resp->content;
+
+		my $content = $XS->XMLin($xmlstr);
+		$info = RyzomAPI::Guild->new($content->{guild});
+	}
+
+	return $info;
 }
 
 sub guildlist {

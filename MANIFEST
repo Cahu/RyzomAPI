@@ -1,4 +1,5 @@
 lib/RyzomAPI.pm
+lib/RyzomAPI/Guild.pm
 lib/RyzomAPI/Guild/Member.pm
 lib/RyzomAPI/Item.pm
 lib/RyzomAPI/Time.pm
@@ -7,5 +8,6 @@ MANIFEST
 MANIFEST.SKIP
 README.md
 t/RyzomAPI.t
+t/RyzomAPI/Guild.t
 t/RyzomAPI/Item.t
 t/RyzomAPI/Time.t
