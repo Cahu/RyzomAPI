@@ -7,6 +7,8 @@ use warnings;
 use LWP::UserAgent;
 use XML::Simple qw(:strict);
 
+use RyzomAPI::Time;
+
 
 use Exporter qw(import);
 
@@ -58,6 +60,17 @@ sub ryzom_time_api {
 	my ($base_url) = @_;
 
 	$base_url ||= TIME_BASE_URL;
+
+	my $time;
+	my $resp = $UA->get($base_url . "?format=xml");
+
+	if ($resp->is_success) {
+		my $xmlstr = $resp->content;
+
+		$time = RyzomAPI::Time->new($XS->XMLin($xmlstr));
+	}
+
+	return $time;
 }
 
 sub ryzom_character_api {
