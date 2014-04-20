@@ -37,6 +37,12 @@ has 'character_base_url' => (
 	default => "http://api.ryzom.com/character.php",
 );
 
+has 'item_icon_base_url' => (
+	is      => 'rw',
+	isa     => 'Str',
+	default => "http://api.ryzom.com/item_icon.php",
+);
+
 
 # defined with 'our' to swap in testing
 our $UA = LWP::UserAgent->new(
@@ -110,5 +116,45 @@ sub guildlist {
 
 	return $list;
 }
+
+sub item_icon {
+	my ($self, $item, %args) = @_;
+
+	my $base_url = $self->item_icon_base_url;
+
+	my $url = $base_url . "?sheetid=";
+
+	if (ref $item eq 'RyzomAPI::Item') {
+		$url .= $item->sheet;
+		$args{q}      //= $item->quality;
+		$args{locked} //= $item->locked;
+		# TODO: some params are in 'craftparameters' ~> include them too
+	} else {
+		$url .= $item;
+	}
+
+	if (%args) {
+		$url .= "&";
+		$url .= join("&", map { "$_=" . $args{$_} } keys %args);
+	}
+
+	return $url;
+}
+
+sub item_icon_bin {
+	my ($self, $item, %args) = @_;
+
+	my $url = $self->item_icon($item, %args);
+
+	my $img;
+	my $resp = $UA->get($url);
+
+	if ($resp->is_success) {
+		$img = $resp->content;
+	}
+
+	return $img;
+}
+
 
 1;
