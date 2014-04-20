@@ -34,6 +34,11 @@ has [
 	isa => 'Str',
 );
 
+has 'cache' => (
+	is  => 'ro',
+	isa => 'HashRef[Int]',
+);
+
 
 __PACKAGE__->meta->make_immutable();
 
