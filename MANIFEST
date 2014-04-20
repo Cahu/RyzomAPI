@@ -1,5 +1,7 @@
-Makefile.PL
 MANIFEST
-README
+README.md
+Makefile.PL
 t/RyzomAPI.t
+t/RyzomAPI/Time.t
 lib/RyzomAPI.pm
+lib/RyzomAPI/Time.pm
