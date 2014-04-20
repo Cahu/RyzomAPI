@@ -8,7 +8,10 @@ WriteMakefile(
 	VERSION_FROM  => 'lib/RyzomAPI.pm', # finds $VERSION
 
 	PREREQ_PM => {
-		Mouse => 0,
+		'Mouse'                => 0,
+		'XML::Simple'          => 0,
+		'LWP::UserAgent'       => 0,
+		'Test::LWP::UserAgent' => 0,
 	},
 
 	test => {

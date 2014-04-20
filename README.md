@@ -16,7 +16,10 @@ DEPENDENCIES
 
 This module requires these other modules and libraries:
 
-	none
+	Mouse
+	XML::Simple
+	LWP::UserAgent
+	Test::LWP::UserAgent
 
 
 COPYRIGHT AND LICENCE
