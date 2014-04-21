@@ -5,8 +5,7 @@ use Test::More;
 use Test::LWP::UserAgent;
 
 BEGIN {
-	use_ok('RyzomAPI::Time');
-	use_ok('RyzomAPI', qw(:time));
+	use_ok('RyzomAPI');
 };
 
 
