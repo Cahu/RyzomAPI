@@ -10,15 +10,15 @@ BEGIN {
 };
 
 
-# swap the user agent
-$RyzomAPI::UA = Test::LWP::UserAgent->new;
+my $client = RyzomAPI->new();
 
-$RyzomAPI::UA->map_response(
+# swap the user agent
+$client->_ua(Test::LWP::UserAgent->new);
+$client->_ua->map_response(
 	qr/time\.php\?format=xml$/,
 	HTTP::Response->parse(join("", <DATA>))
 );
 
-my $client = RyzomAPI->new();
 
 my $time = $client->time;
 ok($time->server_tick    == 618734369);

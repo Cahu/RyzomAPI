@@ -43,16 +43,28 @@ has 'item_icon_base_url' => (
 	default => "http://api.ryzom.com/item_icon.php",
 );
 
-
-# defined with 'our' to swap in testing
-our $UA = LWP::UserAgent->new(
-	timeout   => 10,
-	env_proxy => 1,
+has '_ua' => (
+	is       => 'rw',
+	isa      => 'LWP::UserAgent',
+	init_arg => undef,
+	default  => sub {
+		LWP::UserAgent->new(
+			timeout   => 10,
+			env_proxy => 1,
+		);
+	},
 );
 
-my $XS = XML::Simple->new(
-	KeyAttr    => 1,
-	ForceArray => 0,
+has '_xs' => (
+	is       => 'rw',
+	isa      => 'XML::Simple',
+	init_arg => undef,
+	default  => sub {
+		XML::Simple->new(
+			KeyAttr    => 1,
+			ForceArray => 0,
+		);
+	},
 );
 
 
@@ -62,12 +74,12 @@ sub time {
 	my $base_url = $self->time_base_url;
 
 	my $time;
-	my $resp = $UA->get($base_url . "?format=xml");
+	my $resp = $self->_ua->get($base_url . "?format=xml");
 
 	if ($resp->is_success) {
 		my $xmlstr = $resp->content;
 
-		$time = RyzomAPI::Time->new($XS->XMLin($xmlstr));
+		$time = RyzomAPI::Time->new($self->_xs->XMLin($xmlstr));
 	}
 
 	return $time;
@@ -85,12 +97,12 @@ sub guild {
 	my $base_url = $self->guild_base_url;
 
 	my $info;
-	my $resp = $UA->get($base_url . "?apikey=$apikey&format=xml");
+	my $resp = $self->_ua->get($base_url . "?apikey=$apikey&format=xml");
 
 	if ($resp->is_success) {
 		my $xmlstr = $resp->content;
 
-		my $content = $XS->XMLin($xmlstr);
+		my $content = $self->_xs->XMLin($xmlstr);
 		$info = RyzomAPI::Guild->new($content->{guild});
 	}
 
@@ -103,12 +115,12 @@ sub guildlist {
 	my $base_url = $self->guilds_base_url;
 
 	my $list;
-	my $resp = $UA->get($base_url . "?format=xml");
+	my $resp = $self->_ua->get($base_url . "?format=xml");
 
 	if ($resp->is_success) {
 		my $xmlstr = $resp->content;
 
-		my $content = $XS->XMLin($xmlstr);
+		my $content = $self->_xs->XMLin($xmlstr);
 		$list = [
 			map { RyzomAPI::Guild->new($_) } @{ $content->{guild} }
 		];
@@ -147,7 +159,7 @@ sub item_icon_bin {
 	my $url = $self->item_icon($item, %args);
 
 	my $img;
-	my $resp = $UA->get($url);
+	my $resp = $self->_ua->get($url);
 
 	if ($resp->is_success) {
 		$img = $resp->content;
