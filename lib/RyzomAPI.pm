@@ -169,5 +169,6 @@ sub item_icon_bin {
 	return $img;
 }
 
+__PACKAGE__->meta->make_immutable();
 
 1;
