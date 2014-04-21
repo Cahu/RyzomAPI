@@ -160,6 +160,7 @@ sub item_icon {
 
 	if (ref $item eq 'RyzomAPI::Item') {
 		$url .= $item->sheet;
+		$args{s}      //= $item->stack;
 		$args{q}      //= $item->quality;
 		$args{locked} //= $item->locked;
 		# TODO: some params are in 'craftparameters' ~> include them too
