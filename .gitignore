@@ -3,6 +3,7 @@
 *.swo
 
 # bin files
+*.png
 *.tgz
 *.tar.gz
 

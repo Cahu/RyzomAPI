@@ -9,5 +9,6 @@ MANIFEST.SKIP
 README.md
 t/RyzomAPI.t
 t/RyzomAPI/Guild.t
+t/RyzomAPI/Guilds.t
 t/RyzomAPI/Item.t
 t/RyzomAPI/Time.t

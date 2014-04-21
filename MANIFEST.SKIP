@@ -3,6 +3,7 @@
 .swp$
 .swo$
 .tar.gz$
+.png$
 ^test.pl$
 ^Makefile$
 ^pm_to_blib$
