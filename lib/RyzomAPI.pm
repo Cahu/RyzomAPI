@@ -99,10 +99,14 @@ sub character {
 		my $xmlstr = $resp->content;
 
 		my $content = $self->_xs->XMLin($xmlstr);
-		$info = RyzomAPI::Character->new($content->{character});
-	}
+		my $error   = $content->{character}{error};
 
-	return $info;
+		if (! $error) {
+			$info = RyzomAPI::Character->new($content->{character});
+		}
+
+		return ($error, $info);
+	}
 }
 
 sub guild {
@@ -117,10 +121,14 @@ sub guild {
 		my $xmlstr = $resp->content;
 
 		my $content = $self->_xs->XMLin($xmlstr);
-		$info = RyzomAPI::Guild->new($content->{guild});
-	}
+		my $error   = $content->{guild}{error};
 
-	return $info;
+		if (! $error) {
+			$info = RyzomAPI::Guild->new($content->{guild});
+		}
+
+		return ($error, $info);
+	}
 }
 
 sub guildlist {
