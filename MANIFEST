@@ -1,4 +1,7 @@
 lib/RyzomAPI.pm
+lib/RyzomAPI/Character.pm
+lib/RyzomAPI/Character/Characteristics.pm
+lib/RyzomAPI/Character/Scores.pm
 lib/RyzomAPI/Guild.pm
 lib/RyzomAPI/Guild/Member.pm
 lib/RyzomAPI/Item.pm

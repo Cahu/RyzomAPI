@@ -9,6 +9,7 @@ use XML::Simple qw(:strict);
 
 use RyzomAPI::Time;
 use RyzomAPI::Guild;
+use RyzomAPI::Character;
 
 use Mouse;
 
@@ -90,6 +91,18 @@ sub character {
 	my ($self, $apikey) = @_;
 
 	my $base_url = $self->character_base_url;
+
+	my $info;
+	my $resp = $self->_ua->get($base_url . "?apikey=$apikey");
+
+	if ($resp->is_success) {
+		my $xmlstr = $resp->content;
+
+		my $content = $self->_xs->XMLin($xmlstr);
+		$info = RyzomAPI::Character->new($content->{character});
+	}
+
+	return $info;
 }
 
 sub guild {
