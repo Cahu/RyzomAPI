@@ -29,13 +29,12 @@ has [
 	isa => 'Str',
 );
 
-has 'motd' => (
+has [
+	'motd',
+	'description',
+] => (
 	is  => 'rw',
 	isa => 'Maybe[Str]',
-);
-
-has 'description' => (
-	is  => 'rw',
 );
 
 has [

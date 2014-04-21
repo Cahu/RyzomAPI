@@ -61,8 +61,9 @@ has '_xs' => (
 	init_arg => undef,
 	default  => sub {
 		XML::Simple->new(
-			KeyAttr    => 1,
-			ForceArray => 0,
+			KeyAttr       => 1,
+			ForceArray    => 0,
+			SuppressEmpty => 1,
 		);
 	},
 );
