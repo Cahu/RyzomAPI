@@ -170,7 +170,7 @@ sub item_icon {
 
 	if (%args) {
 		$url .= "&";
-		$url .= join("&", map { "$_=" . $args{$_} } keys %args);
+		$url .= join("&", map { "$_=" . $args{$_} } sort keys %args);
 	}
 
 	return $url;
