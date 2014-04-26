@@ -14,6 +14,9 @@ use RyzomAPI::Character;
 use Mouse;
 
 
+our $VERSION = 0.3;
+
+
 has 'time_base_url' => (
 	is      => 'rw',
 	isa     => 'Str',
