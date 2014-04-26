@@ -84,7 +84,8 @@ around BUILDARGS => sub {
 	];
 
 	$args->{room} = [
-		map {
+		sort { $a->slot <=> $b->slot }
+		map  {
 			(ref $_ ne 'RyzomAPI::Item')
 				? RyzomAPI::Item->new($_)
 				: $_;
