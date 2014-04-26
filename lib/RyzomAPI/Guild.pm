@@ -68,13 +68,14 @@ has 'members' => (
 
 has 'room' => (
 	is  => 'rw',
-	isa => 'ArrayRef[RyzomAPI::Item]',
+	isa => 'ArrayRef[Maybe[RyzomAPI::Item]]',
 );
 
 
 around BUILDARGS => sub {
 	my ($orig, $class, $args) = @_;
 
+	# Create guild member objects
 	$args->{members} = [
 		map {
 			(ref $_ ne 'RyzomAPI::Guild::Member')
@@ -83,14 +84,17 @@ around BUILDARGS => sub {
 		} @{ $args->{members}{member} }
 	];
 
-	$args->{room} = [
-		sort { $a->slot <=> $b->slot }
-		map  {
-			(ref $_ ne 'RyzomAPI::Item')
-				? RyzomAPI::Item->new($_)
-				: $_;
-		} @{ $args->{room}{item} }
-	];
+	# deal with the item list (convert to RyzomAPI::Item)
+	my @items = map  {
+		(ref $_ ne 'RyzomAPI::Item')
+			? RyzomAPI::Item->new($_)
+			: $_;
+	} @{ $args->{room}{item} };
+
+	# Put each item into its designated slot (make things easier for people
+	# using this module
+	$args->{room} = [];
+	$args->{room}->[$_->slot] = $_ for (@items);
 
 	return $class->$orig($args);
 };
