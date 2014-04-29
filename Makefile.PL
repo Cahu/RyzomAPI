@@ -9,6 +9,7 @@ WriteMakefile(
 
 	PREREQ_PM => {
 		'Mouse'                => 0,
+		'XML::Parser'          => 0,
 		'XML::Simple'          => 0,
 		'LWP::UserAgent'       => 0,
 		'Test::LWP::UserAgent' => 0,
