@@ -14,7 +14,7 @@ use RyzomAPI::Character;
 use Mouse;
 
 
-our $VERSION = 0.3;
+our $VERSION = 0.4;
 
 
 has 'time_base_url' => (
@@ -79,16 +79,24 @@ sub time {
 	my $base_url = $self->time_base_url;
 
 	my $time;
+	my $content;
+
 	my $resp = $self->_ua->get($base_url . "?format=xml");
 
 	if ($resp->is_success) {
 		my $xmlstr = $resp->content;
 
-		$time = RyzomAPI::Time->new($self->_xs->XMLin($xmlstr));
-	}
+		$content = $self->_xs->XMLin($xmlstr);
+		$time    = RyzomAPI::Time->new($content);
 
-	return $time;
+		if (wantarray) {
+			return ($time, $content->{cache});
+		} else {
+			return $time;
+		}
+	}
 }
+
 
 sub character {
 	my ($self, $apikey) = @_;
@@ -108,9 +116,14 @@ sub character {
 			$info = RyzomAPI::Character->new($content->{character});
 		}
 
-		return ($error, $info);
+		if (wantarray) {
+			return ($error, $info, $content->{cache});
+		} else {
+			return $info;
+		}
 	}
 }
+
 
 sub guild {
 	my ($self, $apikey) = @_;
@@ -130,9 +143,14 @@ sub guild {
 			$info = RyzomAPI::Guild->new($content->{guild});
 		}
 
-		return ($error, $info);
+		if (wantarray) {
+			return ($error, $info, $content->{cache});
+		} else {
+			return $info;
+		}
 	}
 }
+
 
 sub guildlist {
 	my ($self) = @_;
@@ -149,10 +167,15 @@ sub guildlist {
 		$list = [
 			map { RyzomAPI::Guild->new($_) } @{ $content->{guild} }
 		];
-	}
 
-	return $list;
+		if (wantarray) {
+			return ($list, $content->{cache});
+		} else {
+			return $list;
+		}
+	}
 }
+
 
 sub item_icon {
 	my ($self, $item, %args) = @_;
@@ -179,6 +202,7 @@ sub item_icon {
 	return $url;
 }
 
+
 sub item_icon_bin {
 	my ($self, $item, %args) = @_;
 
@@ -193,6 +217,7 @@ sub item_icon_bin {
 
 	return $img;
 }
+
 
 __PACKAGE__->meta->make_immutable();
 
