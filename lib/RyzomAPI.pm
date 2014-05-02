@@ -17,6 +17,33 @@ use Mouse;
 our $VERSION = 0.3.1;
 
 
+=head1 NAME
+
+RyzomAPI - Module to fetch information from the Ryzom game's API
+
+=head1 SYNOPSIS
+
+blabla
+
+=cut
+
+
+=head1 ATTRIBUTES
+
+=over
+
+=item time_base_url
+
+=item guild_base_url
+
+=item guilds_base_url
+
+=item character_base_url
+
+=back
+
+=cut
+
 has 'time_base_url' => (
 	is      => 'rw',
 	isa     => 'Str',
@@ -80,6 +107,19 @@ has '_xs' => (
 );
 
 
+=head1 METHODS
+
+=over
+
+=cut
+
+=item time
+
+Get the in-game time. If called in list context, the first value returned is the
+'cache' field returned by the API (expirity and creation date).
+
+=cut
+
 sub time {
 	my ($self) = @_;
 
@@ -100,6 +140,20 @@ sub time {
 	}
 }
 
+
+=item character($apikey [, $forcefetch])
+
+Fetch information for the character described by $apikey from the server. If an
+entry was already cached and has not expired, this entry is returned instead
+unless $forcefetch is set to a true value. In list context, the first argument
+is the error returned by the API if any, the second is the RyzomAPI::Character
+object and the third will evaluate to true if the entry has been updated during
+the call.
+
+  my $char = $client->character;
+  my ($error, $char, $updated) = $client->character;
+
+=cut
 
 sub character {
 	my ($self, $apikey, $forcefetch) = @_;
@@ -141,6 +195,20 @@ sub character {
 }
 
 
+=item guild($apikey [, $forcefetch])
+
+Fetch information for the guild described by $apikey from the server. If an
+entry was already cached and has not expired, this entry is returned instead
+unless $forcefetch is set to a true value. In list context, the first argument
+is the error returned by the API if any, the second is the RyzomAPI::Guild
+object and the third will evaluate to true if the entry has been updated during
+the call.
+
+  my $guild = $client->guild;
+  my ($error, $guild, $updated) = $client->guild;
+
+=cut
+
 sub guild {
 	my ($self, $apikey, $forcefetch) = @_;
 
@@ -181,6 +249,12 @@ sub guild {
 }
 
 
+=item guildlist
+
+Get a list of guilds and their members from the server.
+
+=cut
+
 sub guildlist {
 	my ($self) = @_;
 
@@ -205,6 +279,13 @@ sub guildlist {
 	}
 }
 
+
+=item item_icon($item [, %args])
+
+Forge the url that can be used to retrieve the icon of an item from the server.
+$item may be either a RyzomAPI::Item object or a sheet name. %args may be used to add or override attributes for the icon (locked, stack size, etc).
+
+=cut
 
 sub item_icon {
 	my ($self, $item, %args) = @_;
@@ -232,6 +313,12 @@ sub item_icon {
 }
 
 
+=item item_icon_bin($item [, %args])
+
+Same as item_icon but returns raw image data for the icon instead of the url.
+
+=cut
+
 sub item_icon_bin {
 	my ($self, $item, %args) = @_;
 
@@ -247,6 +334,13 @@ sub item_icon_bin {
 	return $img;
 }
 
+
+=item cache_expired($apikey)
+
+Returns a positive value if the cache entry for $apikey has expired, 0 if it has
+not, a negative value if it wasn't found in the cache.
+
+=cut
 
 sub cache_expired {
 	# The cache for the time command is refreshed every minute or so. We use
@@ -264,6 +358,11 @@ sub cache_expired {
 
 	return -1;
 }
+
+
+=back
+
+=cut
 
 
 __PACKAGE__->meta->make_immutable();
