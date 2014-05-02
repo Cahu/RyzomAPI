@@ -14,7 +14,7 @@ use RyzomAPI::Character;
 use Mouse;
 
 
-our $VERSION = 0.4;
+our $VERSION = 0.3.1;
 
 
 has 'time_base_url' => (
@@ -45,6 +45,13 @@ has 'item_icon_base_url' => (
 	is      => 'rw',
 	isa     => 'Str',
 	default => "http://api.ryzom.com/item_icon.php",
+);
+
+has '_cache' => (
+	is       => 'ro',
+	isa      => 'HashRef',
+	default  => sub { {} },
+	init_arg => undef,
 );
 
 has '_ua' => (
@@ -89,17 +96,18 @@ sub time {
 		$content = $self->_xs->XMLin($xmlstr);
 		$time    = RyzomAPI::Time->new($content);
 
-		if (wantarray) {
-			return ($time, $content->{cache});
-		} else {
-			return $time;
-		}
+		return ($content->{cache}, $time);
 	}
 }
 
 
 sub character {
-	my ($self, $apikey) = @_;
+	my ($self, $apikey, $forcefetch) = @_;
+
+	unless ($forcefetch || $self->cache_expired($apikey)) {
+		my $entry = $self->_cache->{$apikey};
+		return (undef, $entry->{data}, 0);
+	}
 
 	my $base_url = $self->character_base_url;
 
@@ -114,10 +122,18 @@ sub character {
 
 		if (! $error) {
 			$info = RyzomAPI::Character->new($content->{character});
+			$self->_cache->{$apikey} = {
+				data   => $info,
+				expire => $content->{character}{cached_until},
+			};
+		}
+
+		else {
+			delete $self->_cache->{$apikey};
 		}
 
 		if (wantarray) {
-			return ($error, $info, $content->{cache});
+			return ($error, $info, 1);
 		} else {
 			return $info;
 		}
@@ -126,7 +142,12 @@ sub character {
 
 
 sub guild {
-	my ($self, $apikey) = @_;
+	my ($self, $apikey, $forcefetch) = @_;
+
+	unless ($forcefetch || $self->cache_expired($apikey)) {
+		my $entry = $self->_cache->{$apikey};
+		return (undef, $entry->{data}, 0);
+	}
 
 	my $base_url = $self->guild_base_url;
 
@@ -141,10 +162,18 @@ sub guild {
 
 		if (! $error) {
 			$info = RyzomAPI::Guild->new($content->{guild});
+			$self->_cache->{$apikey} = {
+				data   => $info,
+				expire => $content->{guild}{cached_until},
+			};
+		}
+
+		else {
+			delete $self->_cache->{$apikey};
 		}
 
 		if (wantarray) {
-			return ($error, $info, $content->{cache});
+			return ($error, $info, 1);
 		} else {
 			return $info;
 		}
@@ -216,6 +245,24 @@ sub item_icon_bin {
 	}
 
 	return $img;
+}
+
+
+sub cache_expired {
+	# The cache for the time command is refreshed every minute or so. We use
+	# it to get the approximate time on the server's clock.
+	my ($self, $apikey) = @_;
+
+	my $t;
+
+	if (my $entry = $self->_cache->{$apikey}) {
+		my ($cacheinfo, $time) = $self->time;
+		$t = $entry->{expire};
+		$t = $cacheinfo->{created};
+		return ($entry->{expire} <= $cacheinfo->{created}) ? 1 : 0;
+	}
+
+	return -1;
 }
 
 

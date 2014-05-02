@@ -11,42 +11,113 @@ BEGIN {
 
 my $client = RyzomAPI->new();
 
+my $data = join("", <DATA>);
+
+my $never_expire = <<XML;
+HTTP/1.1 200 OK
+Content-Type: application/xml; charset=UTF-8
+
+<?xml version="1.0"?>
+<shard_time>
+<cache created="1" expire="9999999999"/>
+</shard_time>
+XML
+
+my $always_expire = <<XML;
+HTTP/1.1 200 OK
+Content-Type: application/xml; charset=UTF-8
+
+<?xml version="1.0"?>
+<shard_time>
+<cache created="9999999999" expire="9999999999"/>
+</shard_time>
+XML
+
+
 # swap the user agent
-$client->_ua(Test::LWP::UserAgent->new);
-$client->_ua->map_response(
-	qr/guild\.php\?apikey=.*$/,
-	HTTP::Response->parse(join("", <DATA>))
-);
 
 
-my $guild = $client->guild("dummykey");
+{
+	init_useragent($client, "");
 
-ok($guild->gid           == 105906460              );
-ok($guild->creation_date == 167933662              );
-ok($guild->name          eq 'The Castle In The Sky');
-ok($guild->description   eq 'some desc'            );
-ok($guild->race          eq 'Zorai'                );
-ok($guild->cult          eq 'kami'                 );
-ok($guild->civilization  eq 'neutral'              );
+	my ($error, $guild, $updated) = $client->guild("dummykey");
 
-ok(scalar @{ $guild->room    } == 2);
-ok(scalar @{ $guild->members } == 2);
+	ok($updated);
+	recurent_tests($guild);
+}
+
+{	# make sure the cache is used and the content hasn't changed by loading from
+	# cache
+
+	init_useragent($client, $never_expire);
+
+	my ($error, $guild, $updated) = $client->guild("dummykey");
+
+	ok(!$error);
+	ok(not $updated);
+	recurent_tests($guild);
+}
+
+{	# make sure the entry in the cache expires and proper reloading is performed
+
+	init_useragent($client, $always_expire);
+
+	my ($error, $guild, $updated) = $client->guild("dummykey");
+
+	ok(!$error);
+	ok($updated);
+	recurent_tests($guild);
+}
+
+{	# make sure the cache is ignored when $forcefetch is non-zero
+
+	init_useragent($client, $never_expire);
+
+	my ($error, $guild, $updated) = $client->guild("dummykey", "force");
+
+	ok(!$error);
+	ok($updated);
+	recurent_tests($guild);
+}
+
 
 done_testing();
 
 
+sub init_useragent {
+	my ($client, $timeresp) = @_;
+
+	$client->_ua(Test::LWP::UserAgent->new);
+
+	$client->_ua->map_response(
+		qr/guild\.php\?apikey=.*$/,
+		HTTP::Response->parse($data)
+	);
+
+	$client->_ua->map_response(
+		qr/time\.php.*$/,
+		HTTP::Response->parse($timeresp)
+	);
+}
+
+sub recurent_tests {
+	my $guild = shift;
+
+	ok($guild->gid           == 105906460              );
+	ok($guild->creation_date == 167933662              );
+	ok($guild->name          eq 'The Castle In The Sky');
+	ok($guild->description   eq 'some desc'            );
+	ok($guild->race          eq 'Zorai'                );
+	ok($guild->cult          eq 'kami'                 );
+	ok($guild->civilization  eq 'neutral'              );
+
+	ok(scalar @{ $guild->room    } == 2);
+	ok(scalar @{ $guild->members } == 2);
+}
+
+
 __DATA__
 HTTP/1.1 200 OK
-Date: Mon, 21 Apr 2014 12:52:38 GMT
-Server: Apache
-X-Powered-By: PHP/5.3.10-1ubuntu3.9
-Expires: Thu, 19 Nov 1981 08:52:00 GMT
-Cache-Control: no-store, no-cache, must-revalidate, post-check=0, pre-check=0
-Pragma: no-cache
-Access-Control-Allow-Origin: *
-Set-Cookie: PHPSESSID=82arju824ec2ekhihgbq61dqa1; path=/; HttpOnly
-Connection: close
-Transfer-Encoding: chunked
 Content-Type: application/xml; charset=UTF-8
 
 <?xml version="1.0"?>
