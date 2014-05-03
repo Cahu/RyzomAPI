@@ -86,9 +86,7 @@ around BUILDARGS => sub {
 
 	# deal with the item list (convert to RyzomAPI::Item)
 	my @items = map  {
-		(ref $_ ne 'RyzomAPI::Item')
-			? RyzomAPI::Item->new($_)
-			: $_;
+		(ref $_ ne 'RyzomAPI::Item') ? RyzomAPI::Item->new($_) : $_;
 	} @{ $args->{room}{item} };
 
 	# Put each item into its designated slot (make things easier for people

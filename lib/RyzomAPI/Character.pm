@@ -82,6 +82,11 @@ has 'scores' => (
 	isa => 'RyzomAPI::Character::Scores',
 );
 
+has 'room' => (
+	is  => 'rw',
+	isa => 'ArrayRef[Maybe[RyzomAPI::Item]]',
+);
+
 has [
 	'created',
 	'cached_until',
@@ -105,6 +110,16 @@ around BUILDARGS => sub {
 			$args->{scores}
 		);
 	}
+
+	# deal with the item list (convert to RyzomAPI::Item)
+	my @items = map  {
+		(ref $_ ne 'RyzomAPI::Item') ? RyzomAPI::Item->new($_) : $_;
+	} @{ $args->{room}{item} };
+
+	# Put each item into its designated slot (make things easier for people
+	# using this module
+	$args->{room} = [];
+	$args->{room}->[$_->slot] = $_ for (@items);
 
 	return $class->$orig($args);
 };
