@@ -111,7 +111,7 @@ sub recurent_tests {
 	ok($guild->cult          eq 'kami'                 );
 	ok($guild->civilization  eq 'neutral'              );
 
-	ok(scalar @{ $guild->room    } == 2);
+	ok(scalar grep { defined } @{ $guild->room } == 2);
 	ok(scalar @{ $guild->members } == 2);
 }
 
