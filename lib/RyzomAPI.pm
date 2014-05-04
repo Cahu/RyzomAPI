@@ -299,7 +299,9 @@ sub item_icon {
 		$args{s}      //= $item->stack;
 		$args{q}      //= $item->quality;
 		$args{locked} //= $item->locked;
-		# TODO: some params are in 'craftparameters' ~> include them too
+		if ($item->craftparameters) {
+			$args{c} //= $item->craftparameters->{color} // 0;
+		}
 	} else {
 		$url .= $item;
 	}
