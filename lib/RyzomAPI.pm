@@ -14,7 +14,7 @@ use RyzomAPI::Character;
 use Mouse;
 
 
-our $VERSION = 0.4;
+our $VERSION = 0.4.1;
 
 
 =head1 NAME
